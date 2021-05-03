@@ -1,28 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:progress_indicators/progress_indicators.dart';
 
 // Classe genérica pra criar as mensagens de usuário e da morgan
-abstract class Message extends StatelessWidget {
+abstract class Message extends StatefulWidget {
   final MainAxisAlignment _alignment;
   final Color _backgroundColor;
-  final Color color;
-  final String msg;
+  final Color _textColor;
+  final String _msg;
+  final bool _loader;
 
-  Message(this.msg, this._alignment, this._backgroundColor, this.color);
+  Message(this._msg, this._alignment, this._backgroundColor, this._textColor,
+      this._loader);
 
+  @override
+  _MessageState createState() => _MessageState();
+}
+
+class _MessageState extends State<Message> {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: _alignment,
+      mainAxisAlignment: widget._alignment,
       children: [
         Card(
+          color: widget._backgroundColor,
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              msg,
+              widget._msg,
               style: TextStyle(
                 fontSize: 20,
-                backgroundColor: _backgroundColor,
-                color: color,
+                color: widget._textColor,
               ),
             ),
           ),
@@ -34,11 +42,11 @@ abstract class Message extends StatelessWidget {
 
 class UserMessage extends Message {
   UserMessage(String msg)
-      : super(msg, MainAxisAlignment.end, Colors.white, Colors.black);
+      : super(msg, MainAxisAlignment.end, Colors.white, Colors.black, false);
 }
 
 class MorganMessage extends Message {
   MorganMessage(String msg)
-      : super(msg, MainAxisAlignment.start, Colors.blueGrey.shade700,
-            Colors.white);
+      : super(msg, MainAxisAlignment.start, Colors.blueGrey.shade800,
+            Colors.white, true);
 }

@@ -13,7 +13,7 @@ class Login extends StatelessWidget {
       body: Center(
         child: Container(
           width: 300,
-          height: 440,
+          height: 450,
           decoration: BoxDecoration(
             color: Colors.black,
             boxShadow: [
@@ -48,7 +48,7 @@ class Login extends StatelessWidget {
               color: Colors.white,
             ),
           ),
-          SizedBox(height: 15),
+          SizedBox(height: 20),
           TextFormField(
             controller: _usernameController,
             validator: (value) {
@@ -63,11 +63,11 @@ class Login extends StatelessWidget {
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(25)),
               ),
-              contentPadding: const EdgeInsets.all(0.0),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 8),
               hintText: 'Username',
             ),
           ),
-          SizedBox(height: 20),
+          SizedBox(height: 10),
           TextFormField(
             controller: _senhaController,
             validator: (value) {
@@ -75,6 +75,7 @@ class Login extends StatelessWidget {
               return null;
             },
             maxLength: 15,
+            obscureText: true,
             style: TextStyle(fontSize: 20),
             decoration: InputDecoration(
               filled: true,
@@ -82,16 +83,19 @@ class Login extends StatelessWidget {
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(25)),
               ),
-              contentPadding: const EdgeInsets.all(0.0),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 8),
               hintText: 'Senha',
             ),
           ),
+          TextButton(
+            onPressed: () => _esqueceu,
+            child: Text(
+              "Esqueceu a senha?",
+              style: TextStyle(fontSize: 16),
+            ),
+          ),
           SizedBox(height: 20),
-          Text('Esqueceu a senha?',
-              style: TextStyle(
-                  fontSize: 16, color: Theme.of(context).primaryColor)),
-          SizedBox(height: 30),
-          ElevatedButton(
+          OutlinedButton(
             onPressed: () {
               if (_formkey.currentState.validate()) {
                 Navigator.pushAndRemoveUntil(
@@ -110,22 +114,17 @@ class Login extends StatelessWidget {
                   ],
                 ),
               ),
-              padding: const EdgeInsets.fromLTRB(
-                  double.infinity, 12, double.infinity, 12),
+              padding: EdgeInsets.fromLTRB(20, 8, 20, 8),
               child: const Text('Login',
-                  style: TextStyle(fontSize: 20, color: Colors.white)),
+                  style: TextStyle(fontSize: 28, color: Colors.white)),
             ),
           ),
           SizedBox(height: 20),
-          ElevatedButton(
+          TextButton(
             onPressed: () => _cadastrar,
-            child: Container(
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(24)),
-                color: Colors.white,
-              ),
-              padding: const EdgeInsets.all(12),
-              child: const Text('Cadastre-se', style: TextStyle(fontSize: 20)),
+            child: Text(
+              "Cadastre-se",
+              style: TextStyle(fontSize: 16),
             ),
           ),
         ],
@@ -135,6 +134,14 @@ class Login extends StatelessWidget {
 
   _cadastrar() async {
     const url = 'http://127.0.0.1:5000/morgan_assistant/registrar';
+    if (await canLaunch(url))
+      await launch(url);
+    else
+      throw 'Could not launch $url';
+  }
+
+  _esqueceu() async {
+    const url = 'http://127.0.0.1:5000/morgan_assistant/mudar_senha';
     if (await canLaunch(url))
       await launch(url);
     else

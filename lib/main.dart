@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:mobile_morgan/telas/tela-login.dart';
 
-void main() {
-  runApp(MorganApp());
-}
+void main() => runApp(MorganApp());
 
 class MorganApp extends StatelessWidget {
   @override

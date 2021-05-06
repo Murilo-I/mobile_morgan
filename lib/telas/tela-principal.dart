@@ -1,40 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_morgan/db/historico_conversa.dart';
 
 import '../components/message_component.dart';
 import '../components/morgan.dart';
 
 class TelaPrincipal extends StatefulWidget {
+  final List<Message> _messages = <Message>[];
+
+  final TextEditingController _messageController = TextEditingController();
+
   @override
   _TelaPrincipalState createState() => _TelaPrincipalState();
 }
 
 class _TelaPrincipalState extends State<TelaPrincipal> {
-  // Variável dinâmica para poder adicionar mensagens
-  // na tela através do floatingActionButton
-  List<Message> messages = <Message>[];
-
-  // Controller para lermos os dados vindos do campo de texto digitado
-  // e posteriormente utilizar este texto para add na lista de mensagens
-  TextEditingController _messageController = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.send),
         onPressed: () {
-          // Atualiza o estado da aplicação para a tela ser reconstruída
-          // e exibir a nova mensagem na lista
           setState(() {
-            String msg = _messageController.text.toLowerCase();
-            // Adiciona a mensagem na lista
-            messages.add(UserMessage(msg));
+            String msg = widget._messageController.text.toLowerCase();
 
-            // Morgan responde a mensagem
-            Morgan.responde(msg, messages);
+            salvarConversa(Conversa(msg, "user"));
 
-            // Limpa o campo de texto após adicionar a mensagem
-            _messageController.text = "";
+            Morgan.responde(msg);
+
+            widget._messageController.text = "";
           });
         },
       ),
@@ -45,21 +38,53 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
           mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
             Image.asset('images/morgan_icon.png', height: 200),
-
-            // Expanded para dar a altura e largura máxima disponíveis para a lista.
-            // Ocupando todo o espaço que não for utilizado pela logo e campo de texto
+            SizedBox(height: 12),
             Expanded(
-              child: ListView.builder(
-                  itemCount: messages.length,
-                  itemBuilder: (context, index) {
-                    print(index);
-                    return messages[index];
-                  }),
+              child: FutureBuilder(
+                future: trazerHistorico(),
+                builder: (context, snapshot) {
+                  List<Conversa> conversas = snapshot.data;
+
+                  switch (snapshot.connectionState) {
+                    case ConnectionState.none:
+                      break;
+                    case ConnectionState.waiting:
+                      return Center(
+                        child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              CircularProgressIndicator(),
+                              Text(
+                                'Carregando histórico',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ]),
+                      );
+                      break;
+                    case ConnectionState.active:
+                      break;
+                    case ConnectionState.done:
+                      for (var conversa in conversas) {
+                        if (conversa.remetente == 'user')
+                          widget._messages.add(UserMessage(conversa.texto));
+                        else
+                          widget._messages.add(MorganMessage(conversa.texto));
+                      }
+                      return ListView.builder(
+                          itemCount: widget._messages.length,
+                          itemBuilder: (context, index) =>
+                              widget._messages[index]);
+                      break;
+                  }
+
+                  return Center(child: Text('Erro desconhecido!'));
+                },
+              ),
             ),
             Padding(
-              padding: EdgeInsets.fromLTRB(0, 20, 70, 0),
+              padding: EdgeInsets.fromLTRB(0, 12, 70, 0),
               child: TextField(
-                controller: _messageController,
+                controller: widget._messageController,
                 style: TextStyle(fontSize: 20),
                 decoration: InputDecoration(
                   filled: true,

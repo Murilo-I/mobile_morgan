@@ -13,7 +13,7 @@ class Login extends StatelessWidget {
       body: Center(
         child: Container(
           width: 300,
-          height: 450,
+          height: 440,
           decoration: BoxDecoration(
             color: Colors.black,
             boxShadow: [

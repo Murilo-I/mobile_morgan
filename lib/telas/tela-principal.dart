@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_morgan/components/open_menu.dart';
 import 'package:mobile_morgan/db/historico_conversa.dart';
 
 import '../components/message_component.dart';
@@ -37,7 +38,10 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
-            Image.asset('images/morgan_icon.png', height: 200),
+            InkWell(
+              onTap: () => openMenu(context),
+              child: Image.asset('images/morgan_icon.png', height: 200),
+            ),
             SizedBox(height: 12),
             Expanded(
               child: FutureBuilder(
@@ -92,7 +96,7 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(25)),
                   ),
-                  hintText: 'Type here...',
+                  hintText: 'Digite Aqui...',
                 ),
               ),
             ),

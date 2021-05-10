@@ -2,8 +2,6 @@ import 'dart:math';
 
 import 'package:mobile_morgan/db/historico_conversa.dart';
 
-import 'message_component.dart';
-
 String _morganResp;
 
 // Gambiarra das respostas da Morgan

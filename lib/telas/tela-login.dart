@@ -1,11 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_morgan/db/user_validations.dart';
 import 'package:mobile_morgan/telas/tela-principal.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class Login extends StatelessWidget {
+class Login extends StatefulWidget {
+  @override
+  _LoginState createState() => _LoginState();
+}
+
+class _LoginState extends State<Login> {
   final TextEditingController _usernameController = TextEditingController();
+
   final TextEditingController _senhaController = TextEditingController();
+
   final _formkey = GlobalKey<FormState>();
+
+  bool _showPassword = false;
 
   @override
   Widget build(BuildContext context) {
@@ -53,6 +63,8 @@ class Login extends StatelessWidget {
             controller: _usernameController,
             validator: (value) {
               if (value.isEmpty) return 'Username obrigatório!';
+              if (verificaUsername(_usernameController.text) == null)
+                return 'Username incorreto!';
               return null;
             },
             maxLength: 25,
@@ -72,10 +84,16 @@ class Login extends StatelessWidget {
             controller: _senhaController,
             validator: (value) {
               if (value.isEmpty) return 'Senha obrigatória!';
+
+              var senha = verificaSenha(_usernameController.text)
+                  .then((value) => value.toString());
+
+              if (senha == null) return 'Senha incorreta!';
+
               return null;
             },
             maxLength: 15,
-            obscureText: true,
+            obscureText: _showPassword == false ? true : false,
             style: TextStyle(fontSize: 20),
             decoration: InputDecoration(
               filled: true,
@@ -85,6 +103,12 @@ class Login extends StatelessWidget {
               ),
               contentPadding: const EdgeInsets.symmetric(horizontal: 8),
               hintText: 'Senha',
+              suffixIcon: GestureDetector(
+                child: Icon(_showPassword == false
+                    ? Icons.visibility_off
+                    : Icons.visibility),
+                onTap: () => setState(() => _showPassword = !_showPassword),
+              ),
             ),
           ),
           TextButton(

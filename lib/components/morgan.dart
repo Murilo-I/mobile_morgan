@@ -203,8 +203,12 @@ class Morgan {
     } else if (msg.contains("últimas notícias") || msg == "últimas notícias") {
       var r = Random().nextInt(9);
       var noticias = ultimasNoticias();
-      noticias.whenComplete(
-          () => noticias.then((value) => _morganResp = value[r + 1]));
+      try {
+        noticias.whenComplete(
+            () => noticias.then((value) => _morganResp = value[r + 1]));
+      } catch (err) {
+        _morganResp = "Foi mal, to sem 4G 🌐 😕";
+      }
       salvarConversa(Conversa(_morganResp, rem));
     } else {
       _morganResp = "Eu não sou paga para isso";

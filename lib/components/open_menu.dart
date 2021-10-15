@@ -1,22 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_morgan/db/historico_conversa.dart';
 import 'package:mobile_morgan/telas/tela-login.dart';
+import 'package:mobile_morgan/telas/tela-principal.dart';
 
 openMenu(context) {
   showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (BuildContext ctx) {
         return SimpleDialog(
           title: const Text('Ações'),
           children: <Widget>[
             SimpleDialogOption(
-              onPressed: () => apagarHistorico(),
-              child: const Text('Apagar histórico'),
+              onPressed: () {
+                apagarHistorico();
+                Navigator.of(ctx).pop();
+                Navigator.of(ctx).pushReplacement(
+                    MaterialPageRoute(builder: (ctx) => TelaPrincipal()));
+              },
+              child: const Text('Apagar histórico (Permanente!)'),
             ),
             SimpleDialogOption(
               onPressed: () {
                 Navigator.pushAndRemoveUntil(
-                    context,
+                    ctx,
                     MaterialPageRoute(builder: (context) => Login()),
                     (route) => false);
               },
